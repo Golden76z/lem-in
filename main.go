@@ -16,5 +16,13 @@ func main() {
 	if !correctfile {
 		return
 	}
-	fmt.Println(RoomStruct)
+	fmt.Println("Starting room: ", RoomStruct.StartingRoom)
+	fmt.Println("Ending room: ", RoomStruct.EndingRoom)
+	fmt.Println("Number of Ants: ", RoomStruct.Ants)
+	for i := 0; i < len(RoomStruct.AllRooms); i++ {
+		fmt.Print("Room name: ", RoomStruct.AllRooms[i].Name, ", ")
+		fmt.Print("Links: ")
+		fmt.Print(RoomStruct.AllRooms[i].Links)
+		fmt.Println()
+	}
 }
