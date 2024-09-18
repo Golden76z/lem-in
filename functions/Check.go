@@ -172,7 +172,6 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 	for i := 0; i < len(RoomArray.AllRooms); i++ {
 		if RoomArray.StartingRoom.Name == RoomArray.AllRooms[i].Name {
 			RoomArray.StartingRoom.Links = RoomArray.AllRooms[i].Links
-			RoomArray.StartingRoom.Position = 0
 		} else if RoomArray.EndingRoom.Name == RoomArray.AllRooms[i].Name {
 			RoomArray.EndingRoom.Links = RoomArray.AllRooms[i].Links
 		}
