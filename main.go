@@ -31,6 +31,17 @@ func main() {
 	}
 	Paths := functions.FindAllPathsBFS(RoomMap, RoomStruct.StartingRoom.Name, RoomStruct.EndingRoom.Name)
 	fmt.Println(Paths)
-	BestPath := functions.FilterPath(Paths)
+	BestPath := functions.FilterPath(Paths, RoomStruct.StartingRoom.Name, RoomStruct.EndingRoom.Name)
 	fmt.Println("Best paths: ", BestPath)
+
+	ant := functions.AntInPath(BestPath, RoomStruct.Ants)
+	for i := 0; i < len(ant); i++ {
+		fmt.Println("Path numero:", i+1, "|| nombre de fourmi:", ant[i])
+	}
+	// test := [][]string{}
+	// t1 := []string{"e", "q", "a", "d"}
+	// t2 := []string{"s"}
+	// test = append(test, t1)
+
+	// fmt.Println(functions.CheckPath(test, t2))
 }
