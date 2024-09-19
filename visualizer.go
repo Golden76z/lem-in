@@ -56,7 +56,7 @@ func NewVisualizer(roomStruct *functions.RoomStruct, paths [][]string, antDistri
 		roomStruct:      roomStruct,
 		paths:           paths,
 		antDistribution: antDistribution,
-		paused:          true,
+		paused:          false,
 		moveDelay:       time.Second,
 	}
 }
@@ -70,14 +70,16 @@ func (v *Visualizer) initAntPositions() {
 }
 
 const (
-	moveInterval = 200 * time.Millisecond // Intervalle de temps entre les mouvements des fourmis
+	moveInterval = 500 * time.Millisecond // Intervalle de temps entre les mouvements des fourmis
 )
 
 func (v *Visualizer) Update() error {
+	// Permet de mettre en pause ou de reprendre avec la touche espace
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
 		v.paused = !v.paused
 	}
 
+	// Ajuste la vitesse avec les touches fléchées UP et DOWN
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		v.moveDelay -= 50 * time.Millisecond
 		if v.moveDelay < 50*time.Millisecond {
@@ -91,8 +93,9 @@ func (v *Visualizer) Update() error {
 		}
 	}
 
+	// Déplace les fourmis automatiquement si le jeu n'est pas en pause
 	if !v.paused {
-		if time.Since(v.lastMoveTime) >= moveInterval {
+		if time.Since(v.lastMoveTime) >= v.moveDelay {
 			v.step++
 			v.moveAnts()
 			v.lastMoveTime = time.Now()
