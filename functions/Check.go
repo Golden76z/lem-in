@@ -62,8 +62,8 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
 					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.StartingRoom = SingleRoom
@@ -91,8 +91,8 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
 					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.EndingRoom = SingleRoom
@@ -120,8 +120,8 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
 					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.AllRooms = append(RoomArray.AllRooms, SingleRoom)

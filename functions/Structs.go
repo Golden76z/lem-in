@@ -3,8 +3,8 @@ package functions
 //Struct that will store a single room informations
 type Rooms struct {
 	Name    string
-	x_value int
-	y_value int
+	X_value int
+	Y_value int
 	Links   []string
 	Visited bool
 }
