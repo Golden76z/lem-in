@@ -10,6 +10,7 @@ type Rooms struct {
 
 type RoomStruct struct {
 	Ants         int
+	tabAntName   []string
 	AllRooms     []Rooms
 	AllPath      [][]string
 	StartingRoom Rooms
