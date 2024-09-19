@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// ? Function that will all kinds of potentials errors in the file
 func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 	//Opening the file
 	file, err := os.Open("./examples/" + filename + ".txt")
@@ -27,7 +28,7 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 	for fileScanner.Scan() {
 		if first {
 			numberofants, err := strconv.Atoi(fileScanner.Text())
-			if err != nil || numberofants == 0 {
+			if err != nil || numberofants < 1 {
 				fmt.Println("------------------------------------")
 				fmt.Println("   Error: Invalid number of Ants")
 				fmt.Println("------------------------------------")
@@ -70,6 +71,13 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			if err1 != nil || err2 != nil {
 				fmt.Println("------------------------------------")
 				fmt.Println("    Error: Invalid coordinates")
+				fmt.Println("------------------------------------")
+				return false
+
+				//Checking if the room name starts with a F or a # (Error)
+			} else if temparray[0][0] == '#' || temparray[0][0] == 'F' {
+				fmt.Println("------------------------------------")
+				fmt.Println("    Error: Invalid room name")
 				fmt.Println("------------------------------------")
 				return false
 			} else {
@@ -127,38 +135,48 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 					index2 = i
 				}
 			}
+			//If one of the 2 rooms that are linked doesn't exist, display an error
 			if !exist1 || !exist2 {
 				fmt.Println("------------------------------------")
 				fmt.Println("     Error: Invalid Room Name")
 				fmt.Println("------------------------------------")
 				return false
+
+				//If they both exist, we append to the first the name of the second to his links
+				//And we append to the second the name of the first to his links aswell
 			} else {
 				RoomArray.AllRooms[index1].Links = append(RoomArray.AllRooms[index1].Links, linkarray[1])
 				RoomArray.AllRooms[index2].Links = append(RoomArray.AllRooms[index2].Links, linkarray[0])
 			}
 		}
+
+		//Checking if we got a start
 		if fileScanner.Text() == "##start" {
 			startcount++
 			startingroom = true
+
+			//Checking if we got an end
 		} else if fileScanner.Text() == "##end" {
 			endcount++
 			endingroom = true
 		}
 	}
-	//Checking if we got a starting point
+	//Checking if the start count isn't different from 1
 	if startcount != 1 {
 		fmt.Println("------------------------------------")
 		fmt.Println("     Error: No starting point")
 		fmt.Println("------------------------------------")
 		return false
 
-		//Checking if we got an ending point
+		//Checking if the end count isn't different from 1
 	} else if endcount != 1 {
 		fmt.Println("------------------------------")
 		fmt.Println("   Error: No ending point")
 		fmt.Println("------------------------------")
 		return false
 	}
+
+	//Ranging over all the rooms to check if there's no doubles
 	for i := 0; i < len(RoomArray.AllRooms); i++ {
 		for j := i + 1; j < len(RoomArray.AllRooms); j++ {
 			if RoomArray.AllRooms[i].Name == RoomArray.AllRooms[j].Name {
@@ -169,6 +187,8 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			}
 		}
 	}
+
+	//Getting the links on the starting and ending rooms
 	for i := 0; i < len(RoomArray.AllRooms); i++ {
 		if RoomArray.StartingRoom.Name == RoomArray.AllRooms[i].Name {
 			RoomArray.StartingRoom.Links = RoomArray.AllRooms[i].Links
@@ -176,5 +196,7 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			RoomArray.EndingRoom.Links = RoomArray.AllRooms[i].Links
 		}
 	}
+
+	//If we didn't encounter an error until now we return true
 	return true
 }

@@ -1,5 +1,6 @@
 package functions
 
+//Struct that will store a single room informations
 type Rooms struct {
 	Name    string
 	x_value int
@@ -8,6 +9,7 @@ type Rooms struct {
 	Visited bool
 }
 
+//Struct that will store all informations needed
 type RoomStruct struct {
 	Ants         int
 	tabAntName   []string

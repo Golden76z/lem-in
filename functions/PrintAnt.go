@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// ? Function that will attribute names to our Ants
 func (antTab *RoomStruct) NameAnt() {
 	antsNumber := antTab.Ants
 
@@ -14,6 +15,7 @@ func (antTab *RoomStruct) NameAnt() {
 	}
 }
 
+// ? Function that will move our Ants and print the movements
 func SimulateAntMovement(paths [][]string, antDistribution [][]int) {
 	type AntPosition struct {
 		ant  int
@@ -55,5 +57,6 @@ func SimulateAntMovement(paths [][]string, antDistribution [][]int) {
 		antPositions = newPositions
 		count++
 	}
+	fmt.Println("-------------------------------------------")
 	println("Number of move: ", count-1)
 }

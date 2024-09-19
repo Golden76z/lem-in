@@ -1,10 +1,10 @@
 package functions
 
 import (
-	"fmt"
 	"math"
 )
 
+// ? Function that will attribute Ants to a path they are going to use
 func DistributeAnts(paths [][]string, numAnts int) [][]int {
 	distribution := make([][]int, len(paths))
 	pathLengths := make([]int, len(paths))
@@ -25,6 +25,5 @@ func DistributeAnts(paths [][]string, numAnts int) [][]int {
 		}
 		distribution[bestPathIndex] = append(distribution[bestPathIndex], i)
 	}
-	fmt.Println(distribution)
 	return distribution
 }
