@@ -34,12 +34,16 @@ func main() {
 	BestPath := functions.FilterPath(Paths, RoomStruct.StartingRoom.Name, RoomStruct.EndingRoom.Name)
 	fmt.Println("Best paths: ", BestPath)
 
-	ant := functions.AntInPath(BestPath, RoomStruct.Ants)
+	ant := functions.DistributeAnts(BestPath, RoomStruct.Ants)
 	for i := 0; i < len(ant); i++ {
 		fmt.Println("Path numero:", i+1, "|| nombre de fourmi:", ant[i])
 	}
-	antTab := RoomStruct
-	antTab.NameAnt()
+
+	// roomStruct := RoomStruct
+	// roomStruct.NameAnt()
+
+	functions.SimulateAntMovement(BestPath, ant)
+
 	// test := [][]string{}
 	// t1 := []string{"e", "q", "a", "d"}
 	// t2 := []string{"s"}

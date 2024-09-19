@@ -1,27 +1,30 @@
 package functions
 
-func AntInPath(paths [][]string, numberOfAnts int) []int {
-	// Initialiser le tableau résultat avec un élément pour chaque chemin
-	result := make([]int, len(paths))
+import (
+	"fmt"
+	"math"
+)
 
-	// Boucle tant qu'il reste des fourmis à répartir
-	for numberOfAnts > 0 {
-		minLen := 0 // Réinitialiser minLen pour chaque nouvelle fourmi
-
-		// Trouver le chemin qui prendra le moins de temps pour la fourmi suivante
-		for i := 1; i < len(paths); i++ {
-			// Comparer les longueurs des chemins avec le nombre actuel de fourmis
-			if len(paths[i])+result[i] < len(paths[minLen])+result[minLen] {
-				minLen = i
-			}
-		}
-
-		// Ajouter une fourmi au chemin trouvé
-		result[minLen]++
-
-		// Réduire le nombre de fourmis restantes
-		numberOfAnts--
+func DistributeAnts(paths [][]string, numAnts int) [][]int {
+	distribution := make([][]int, len(paths))
+	pathLengths := make([]int, len(paths))
+	for i, path := range paths {
+		pathLengths[i] = len(path) - 1
 	}
 
-	return result
+	// Distribute ants in a specific order
+	for i := 1; i <= numAnts; i++ {
+		bestPathIndex := 0
+		bestArrivalTime := math.MaxInt32
+		for j := range paths {
+			arrivalTime := len(distribution[j]) + pathLengths[j]
+			if arrivalTime < bestArrivalTime {
+				bestPathIndex = j
+				bestArrivalTime = arrivalTime
+			}
+		}
+		distribution[bestPathIndex] = append(distribution[bestPathIndex], i)
+	}
+	fmt.Println(distribution)
+	return distribution
 }
