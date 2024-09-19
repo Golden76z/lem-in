@@ -51,6 +51,13 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				fmt.Println("    Error: Invalid coordinates")
 				fmt.Println("------------------------------------")
 				return false
+
+				//Checking if the room name starts with a F or a # (Error)
+			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
+				fmt.Println("------------------------------------")
+				fmt.Println("    Error: Invalid room name")
+				fmt.Println("------------------------------------")
+				return false
 			} else {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
@@ -75,7 +82,7 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				return false
 
 				//Checking if the room name starts with a F or a # (Error)
-			} else if temparray[0][0] == '#' || temparray[0][0] == 'F' {
+			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
 				fmt.Println("------------------------------------")
 				fmt.Println("    Error: Invalid room name")
 				fmt.Println("------------------------------------")
@@ -100,6 +107,13 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			if err1 != nil || err2 != nil {
 				fmt.Println("------------------------------------")
 				fmt.Println("    Error: Invalid coordinates")
+				fmt.Println("------------------------------------")
+				return false
+
+				//Checking if the room name starts with a F or a # (Error)
+			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
+				fmt.Println("------------------------------------")
+				fmt.Println("    Error: Invalid room name")
 				fmt.Println("------------------------------------")
 				return false
 			} else {

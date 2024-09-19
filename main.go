@@ -32,6 +32,8 @@ func main() {
 
 	//Getting all the possible path using the BFS Algorithm
 	Paths := functions.FindAllPathsBFS(RoomMap, RoomStruct.StartingRoom.Name, RoomStruct.EndingRoom.Name)
+
+	//Printing all the possible paths
 	// fmt.Println(Paths)
 
 	//Filtering the solution to get the most path possibles that doesn't use similar rooms

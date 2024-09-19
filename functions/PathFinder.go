@@ -38,7 +38,6 @@ func FindAllPathsBFS(rooms map[string]*Rooms, start, end string) [][]string {
 			}
 		}
 	}
-
 	return paths
 }
 
