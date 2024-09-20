@@ -51,13 +51,13 @@ func NewVisualizer(roomStruct *functions.RoomStruct, paths [][]string, antDistri
 		occupiedRooms[room.Name] = false
 	}
 	// La salle de départ peut contenir plusieurs fourmis
-	occupiedRooms[roomStruct.StartingRoom.Name] = false // Toujours libre pour de nouvelles fourmis
+	occupiedRooms[roomStruct.StartingRoom.Name] = true // Toujours libre pour de nouvelles fourmis
 
 	return &Visualizer{
 		roomStruct:      roomStruct,
 		paths:           paths,
 		antDistribution: antDistribution,
-		paused:          false,
+		paused:          true,
 		moveDelay:       time.Second,
 	}
 }

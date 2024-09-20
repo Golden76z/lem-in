@@ -37,6 +37,7 @@ func main() {
 		fmt.Println("Path number:", i+1, "|| Ants in this path:", antDistribution[i])
 	}
 
+	functions.SimulateAntMovement(BestPath, antDistribution)
 	fmt.Println("-------------------------------------------")
 	fmt.Println("Starting visualization...")
 
