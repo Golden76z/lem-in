@@ -38,9 +38,10 @@ type Visualizer struct {
 }
 
 type AntPosition struct {
-	ant  int
-	path int
-	step int
+	ant      int
+	path     int
+	step     int
+	progress float64
 }
 
 func NewVisualizer(roomStruct *functions.RoomStruct, paths [][]string, antDistribution [][]int) *Visualizer {
@@ -64,13 +65,17 @@ func NewVisualizer(roomStruct *functions.RoomStruct, paths [][]string, antDistri
 func (v *Visualizer) initAntPositions() {
 	for pathIndex, ants := range v.antDistribution {
 		for _, ant := range ants {
-			v.antPositions = append(v.antPositions, AntPosition{ant, pathIndex, 0})
+			v.antPositions = append(v.antPositions, AntPosition{ant, pathIndex, 0, moveSpeed})
 		}
 	}
 }
 
 const (
-	moveInterval = 500 * time.Millisecond // Intervalle de temps entre les mouvements des fourmis
+	moveInterval = 800 * time.Millisecond // Intervalle de temps entre les mouvements des fourmis
+)
+
+const (
+	moveSpeed = 0.01 // Vitesse de déplacement des fourmis
 )
 
 func (v *Visualizer) Update() error {
@@ -95,6 +100,10 @@ func (v *Visualizer) Update() error {
 
 	// Déplace les fourmis automatiquement si le jeu n'est pas en pause
 	if !v.paused {
+		// Mettre à jour la progression des fourmis
+		v.updateAntsProgress()
+
+		// Si l'intervalle de temps est atteint, passer à la prochaine étape
 		if time.Since(v.lastMoveTime) >= v.moveDelay {
 			v.step++
 			v.moveAnts()
@@ -104,7 +113,6 @@ func (v *Visualizer) Update() error {
 
 	return nil
 }
-
 func (v *Visualizer) Draw(screen *ebiten.Image) {
 	v.drawRooms(screen)
 	v.drawTunnels(screen)
@@ -147,20 +155,46 @@ func (v *Visualizer) drawTunnels(screen *ebiten.Image) {
 	}
 }
 
+func (v *Visualizer) updateAntsProgress() {
+	// Mettre à jour la progression des fourmis entre les salles
+	for i := range v.antPositions {
+		// Si la fourmi est toujours en déplacement (avant d'atteindre la dernière étape)
+		if v.antPositions[i].step < len(v.paths[v.antPositions[i].path])-1 {
+			v.antPositions[i].progress += moveSpeed
+			// Limiter la progression à 1.0
+			if v.antPositions[i].progress > 1.0 {
+				v.antPositions[i].progress = 1.0
+			}
+		}
+	}
+}
+
 func (v *Visualizer) drawAnts(screen *ebiten.Image) {
 	for _, pos := range v.antPositions {
-		if pos.step < len(v.paths[pos.path]) {
-			roomName := v.paths[pos.path][pos.step]
+		if pos.step < len(v.paths[pos.path])-1 {
+			currentRoom := v.paths[pos.path][pos.step]
+			nextRoom := v.paths[pos.path][pos.step+1]
+
+			var currentX, currentY, nextX, nextY int
+
+			// Obtenir les coordonnées des salles actuelle et suivante
 			for _, room := range v.roomStruct.AllRooms {
-				if room.Name == roomName {
-					x, y := v.mapCoordinates(room.X_value, room.Y_value)
-					// Dessiner un cercle pour représenter la fourmi
-					ebitenutil.DrawCircle(screen, float64(x), float64(y), 5, color.RGBA{255, 0, 0, 255})
-					// Afficher l'identifiant de la fourmi
-					text.Draw(screen, fmt.Sprintf("L%d", pos.ant), gameFont, x-5, y-10, color.White)
-					break
+				if room.Name == currentRoom {
+					currentX, currentY = v.mapCoordinates(room.X_value, room.Y_value)
+				}
+				if room.Name == nextRoom {
+					nextX, nextY = v.mapCoordinates(room.X_value, room.Y_value)
 				}
 			}
+
+			// Interpoler les positions en fonction de la progression
+			interpolatedX := int(float64(currentX)*(1.0-pos.progress) + float64(nextX)*pos.progress)
+			interpolatedY := int(float64(currentY)*(1.0-pos.progress) + float64(nextY)*pos.progress)
+
+			// Dessiner un cercle pour représenter la fourmi à la position interpolée
+			ebitenutil.DrawCircle(screen, float64(interpolatedX), float64(interpolatedY), 5, color.RGBA{255, 0, 0, 255})
+			// Afficher l'identifiant de la fourmi
+			text.Draw(screen, fmt.Sprintf("L%d", pos.ant), gameFont, interpolatedX-5, interpolatedY-10, color.White)
 		}
 	}
 }
@@ -185,27 +219,39 @@ func (v *Visualizer) moveAnts() {
 
 	// Boucle sur toutes les fourmis
 	for _, pos := range v.antPositions {
-		// Vérifie que la fourmi n'a pas atteint la dernière étape de son chemin
 		if pos.step < len(v.paths[pos.path])-1 {
 			currentRoom := v.paths[pos.path][pos.step]
 			nextRoom := v.paths[pos.path][pos.step+1]
 
-			// Vérifie si la salle "nextRoom" est la salle "end"
-			isEndRoom := nextRoom == v.roomStruct.EndingRoom.Name
-
-			// Si la salle suivante est la salle "end" ou n'est pas occupée, la fourmi peut avancer
-			if isEndRoom || !v.occupiedRooms[nextRoom] {
-				// Déplace la fourmi
-				v.occupiedRooms[currentRoom] = false // Libère la salle actuelle
-				if !isEndRoom {                      // Si ce n'est pas la salle "end", occupe la prochaine salle
-					v.occupiedRooms[nextRoom] = true
+			// Si la fourmi est dans la salle de départ, elle ne peut avancer que si la première salle de son chemin est libre
+			if currentRoom == v.roomStruct.StartingRoom.Name {
+				// Vérifie si la salle suivante (la première du chemin) est libre
+				if !v.occupiedRooms[nextRoom] {
+					// Si la salle suivante est libre, la fourmi peut commencer à avancer
+					pos.step++
+					pos.progress = 0.0
+					v.occupiedRooms[nextRoom] = true // Occupe la première salle du chemin
 				}
-				// Ajoute la nouvelle position de la fourmi (incrémente step)
-				newPositions = append(newPositions, AntPosition{pos.ant, pos.path, pos.step + 1})
-			} else {
-				// Si la salle suivante est occupée, la fourmi reste sur place
+				// Sinon, la fourmi reste dans la salle de départ
 				newPositions = append(newPositions, pos)
+				continue
 			}
+
+			// Si la fourmi est déjà en déplacement (et pas dans la salle de départ)
+			isEndRoom := nextRoom == v.roomStruct.EndingRoom.Name
+			if pos.progress >= 1.0 {
+				// Si la salle suivante est libre ou que c'est la salle de fin
+				if isEndRoom || !v.occupiedRooms[nextRoom] {
+					// La fourmi avance d'une salle
+					pos.step++
+					pos.progress = 0.0
+					v.occupiedRooms[currentRoom] = false // Libère la salle actuelle
+					if !isEndRoom {
+						v.occupiedRooms[nextRoom] = true // Occupe la salle suivante
+					}
+				}
+			}
+			newPositions = append(newPositions, pos)
 		} else {
 			// Si la fourmi est déjà à la dernière étape, elle ne bouge pas
 			newPositions = append(newPositions, pos)
