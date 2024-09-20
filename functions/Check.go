@@ -16,11 +16,15 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 		return false
 	}
 
-	//Boolean values to check if we have start and end rooms
+	//Variables to check if the rooms that are linked exist
 	startingroom := false
 	endingroom := false
+
+	//Variables to check how many times we encounter ##start and ##end
 	startcount := 0
 	endcount := 0
+
+	//Variable to check only the very first line (number of Ants)
 	first := true
 
 	//Going throught the file line by line
@@ -39,31 +43,31 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			first = false
 		}
 		//Creation of 2 arrays that will store coordinates and links values
-		temparray := strings.Split(fileScanner.Text(), " ")
+		roomarray := strings.Split(fileScanner.Text(), " ")
 		linkarray := strings.Split(fileScanner.Text(), "-")
 		//Checking if the line is a room
-		if len(temparray) == 3 && startingroom {
-			coordinate_x, err1 := strconv.Atoi(temparray[1])
-			coordinate_y, err2 := strconv.Atoi(temparray[2])
+		if len(roomarray) == 3 && startingroom {
+			coordinate_x, err1 := strconv.Atoi(roomarray[1])
+			coordinate_y, err2 := strconv.Atoi(roomarray[2])
 			//Checking if the coordinates are int values
 			if err1 != nil || err2 != nil {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid coordinates")
+				fmt.Println(" Error: Invalid coordinates (No ints)")
 				fmt.Println("------------------------------------")
 				return false
 
 				//Checking if the room name starts with a F or a # (Error)
-			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
+			} else if roomarray[0][0] == '#' || roomarray[0][0] == 'L' {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid room name")
+				fmt.Println("  Error: Invalid room name (L or #)")
 				fmt.Println("------------------------------------")
 				return false
 			} else {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
-					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					Name:    roomarray[0],
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.StartingRoom = SingleRoom
@@ -71,28 +75,28 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				startingroom = false
 			}
 			//Checking if the line is a link
-		} else if len(temparray) == 3 && endingroom {
-			coordinate_x, err1 := strconv.Atoi(temparray[1])
-			coordinate_y, err2 := strconv.Atoi(temparray[2])
+		} else if len(roomarray) == 3 && endingroom {
+			coordinate_x, err1 := strconv.Atoi(roomarray[1])
+			coordinate_y, err2 := strconv.Atoi(roomarray[2])
 			//Checking if the coordinates are int values
 			if err1 != nil || err2 != nil {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid coordinates")
+				fmt.Println(" Error: Invalid coordinates (No ints)")
 				fmt.Println("------------------------------------")
 				return false
 
 				//Checking if the room name starts with a F or a # (Error)
-			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
+			} else if roomarray[0][0] == '#' || roomarray[0][0] == 'L' {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid room name")
+				fmt.Println("  Error: Invalid room name (L or #)")
 				fmt.Println("------------------------------------")
 				return false
 			} else {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
-					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					Name:    roomarray[0],
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.EndingRoom = SingleRoom
@@ -100,28 +104,28 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				endingroom = false
 			}
 			//Checking if the line is a link
-		} else if len(temparray) == 3 {
-			coordinate_x, err1 := strconv.Atoi(temparray[1])
-			coordinate_y, err2 := strconv.Atoi(temparray[2])
+		} else if len(roomarray) == 3 {
+			coordinate_x, err1 := strconv.Atoi(roomarray[1])
+			coordinate_y, err2 := strconv.Atoi(roomarray[2])
 			//Checking if the coordinates are int values
 			if err1 != nil || err2 != nil {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid coordinates")
+				fmt.Println(" Error: Invalid coordinates (No ints)")
 				fmt.Println("------------------------------------")
 				return false
 
 				//Checking if the room name starts with a F or a # (Error)
-			} else if temparray[0][0] == '#' || temparray[0][0] == 'L' {
+			} else if roomarray[0][0] == '#' || roomarray[0][0] == 'L' {
 				fmt.Println("------------------------------------")
-				fmt.Println("    Error: Invalid room name")
+				fmt.Println("  Error: Invalid room name (L or #)")
 				fmt.Println("------------------------------------")
 				return false
 			} else {
 				//Storing the room values into a struct
 				SingleRoom := Rooms{
-					Name:    temparray[0],
-					x_value: coordinate_x,
-					y_value: coordinate_y,
+					Name:    roomarray[0],
+					X_value: coordinate_x,
+					Y_value: coordinate_y,
 				}
 				//Storing that room into the room array
 				RoomArray.AllRooms = append(RoomArray.AllRooms, SingleRoom)
@@ -135,6 +139,7 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				fmt.Println("------------------------------------")
 				return false
 			}
+
 			exist1 := false
 			exist2 := false
 			index1 := 0
@@ -151,9 +156,9 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 			}
 			//If one of the 2 rooms that are linked doesn't exist, display an error
 			if !exist1 || !exist2 {
-				fmt.Println("------------------------------------")
-				fmt.Println("     Error: Invalid Room Name")
-				fmt.Println("------------------------------------")
+				fmt.Println("----------------------------------------")
+				fmt.Println("Error: Invalid Room Name (Doesn't exist)")
+				fmt.Println("----------------------------------------")
 				return false
 
 				//If they both exist, we append to the first the name of the second to his links
@@ -162,6 +167,16 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 				RoomArray.AllRooms[index1].Links = append(RoomArray.AllRooms[index1].Links, linkarray[1])
 				RoomArray.AllRooms[index2].Links = append(RoomArray.AllRooms[index2].Links, linkarray[0])
 			}
+		} else if len(roomarray) > 3 {
+			fmt.Println("------------------------------------")
+			fmt.Println("Error: Invalid coordinates (Too many)")
+			fmt.Println("------------------------------------")
+			return false
+		} else if len(linkarray) > 2 {
+			fmt.Println("------------------------------------")
+			fmt.Println("  Error: Invalid links (Too many)")
+			fmt.Println("------------------------------------")
+			return false
 		}
 
 		//Checking if we got a start
@@ -202,12 +217,15 @@ func (RoomArray *RoomStruct) CheckLemin(filename string) bool {
 		}
 	}
 
-	//Getting the links on the starting and ending rooms
+	//Checking for rooms coordinates
 	for i := 0; i < len(RoomArray.AllRooms); i++ {
-		if RoomArray.StartingRoom.Name == RoomArray.AllRooms[i].Name {
-			RoomArray.StartingRoom.Links = RoomArray.AllRooms[i].Links
-		} else if RoomArray.EndingRoom.Name == RoomArray.AllRooms[i].Name {
-			RoomArray.EndingRoom.Links = RoomArray.AllRooms[i].Links
+		for j := i + 1; j < len(RoomArray.AllRooms); j++ {
+			if RoomArray.AllRooms[i].X_value == RoomArray.AllRooms[j].X_value && RoomArray.AllRooms[i].Y_value == RoomArray.AllRooms[j].Y_value {
+				fmt.Println("-------------------------------------------")
+				fmt.Println("Error: Multiple rooms with same coordinates")
+				fmt.Println("-------------------------------------------")
+				return false
+			}
 		}
 	}
 

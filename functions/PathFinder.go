@@ -10,23 +10,28 @@ func FindAllPathsBFS(rooms map[string]*Rooms, start, end string) [][]string {
 	queue := list.New()
 	queue.PushBack([]string{start})
 
+	//While we have paths that didn't reach end yet, we continue
 	for queue.Len() > 0 {
 		// Print the current state of the queue
 		// fmt.Println("Current queue:")
 		// for e := queue.Front(); e != nil; e = e.Next() {
 		// 	fmt.Printf("%v ", e.Value)
 		// }
+
+		//Removing the first element of the queue and storing it on the path variable
 		path := queue.Remove(queue.Front()).([]string)
+
+		//Storing the name of the last room of the path
 		lastRoom := path[len(path)-1]
 
-		//Checking if the path is currently on the end position
+		//Checking if the room is currently at the end
 		if lastRoom == end {
 			//If that's the case we append this path and go to the next one
 			paths = append(paths, path)
 			continue
 		}
 
-		//Explore other rooms as before
+		//We explore all the links of the current room
 		for _, nextRoom := range rooms[lastRoom].Links {
 			//If the link we are heading isn't contained in our path, then we move
 			if !contains(path, nextRoom) {

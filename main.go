@@ -38,8 +38,9 @@ func main() {
 
 	//Filtering the solution to get the most path possibles that doesn't use similar rooms
 	BestPath := functions.FilterPath(Paths, RoomStruct.StartingRoom.Name, RoomStruct.EndingRoom.Name)
+	fmt.Println("---------------------------------------------------------------------------------------")
 	fmt.Println("Best paths: ", BestPath)
-	fmt.Println("-------------------------------------------")
+	fmt.Println("---------------------------------------------------------------------------------------")
 
 	//Distribution of the Ants into the room they are going to use
 	ant := functions.DistributeAnts(BestPath, RoomStruct.Ants)
@@ -48,7 +49,7 @@ func main() {
 	}
 
 	//Moving the Ants on the path and printing their movements
-	fmt.Println("-------------------------------------------")
+	fmt.Println("---------------------------------------------------------------------------------------")
 	functions.SimulateAntMovement(BestPath, ant)
-	fmt.Println("-------------------------------------------")
+	fmt.Println("---------------------------------------------------------------------------------------")
 }

@@ -57,6 +57,6 @@ func SimulateAntMovement(paths [][]string, antDistribution [][]int) {
 		antPositions = newPositions
 		count++
 	}
-	fmt.Println("-------------------------------------------")
+	fmt.Println("---------------------------------------------------------------------------------------")
 	println("Number of move: ", count-1)
 }
